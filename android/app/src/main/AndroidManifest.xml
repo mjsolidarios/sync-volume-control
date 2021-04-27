@@ -2,6 +2,7 @@
     package="com.example.volume_control">
    <application
         android:label="volume_control"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

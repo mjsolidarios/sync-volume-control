@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,18 +32,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    IO.Socket socket = IO.io('https://sync-volume-server.herokuapp.com/');
+    connectToServer();
+  }
+
+  void connectToServer() {
+    print("Connecting to server....");
+    Socket socket = io(
+        'https://sync-volume-server.herokuapp.com:3000',
+        OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect() // disable auto-connection
+            .build());
+    socket.connect();
 
     socket.onConnect((_) {
       print('connect');
-      socket.emit('volume', 0);
     });
 
-    print("dgfhdfghdfghdfghgfh");
-
-    socket.on('event', (data) => print(data));
-    socket.onDisconnect((_) => print('disconnect'));
-    socket.on('fromServer', (_) => print(_));
+    socket.onConnectError((data) {
+      print("Connection error. ${data.toString()}");
+    });
   }
 
   @override
